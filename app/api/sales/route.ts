@@ -16,10 +16,10 @@ export async function POST(req: Request) {
     if (products.length !== productIds.length) return NextResponse.json({ message: 'Ada barang tidak ditemukan.' }, { status: 400 });
     const priceFor = (p:any) => b.buyerType === 'PARTNER' ? p.partnerPrice : p.generalPrice;
     const prepared = items.map(i => {
-      const p = products.find(x => x.id === Number(i.productId))!; const qty = Number(i.quantity); const price = priceFor(p);
+      const p = products.find((x: any) => x.id === Number(i.productId))!; const qty = Number(i.quantity); const price = priceFor(p);
       return { p, qty, price, subtotal: qty * price, profit: qty * (price - p.purchasePrice) };
     });
-    const shortage = prepared.find(x => x.p.stock < x.qty);
+    const shortage = prepared.find((x: any) => x.p.stock < x.qty);
     if (shortage) return NextResponse.json({ message: `Stok ${shortage.p.name} tidak cukup. Sisa ${shortage.p.stock}.` }, { status: 400 });
     const total = prepared.reduce((s, x) => s + x.subtotal, 0); const paid = Number(b.paid || 0);
     if (paid < total) return NextResponse.json({ message: 'Pembayaran kurang dari total.' }, { status: 400 });
