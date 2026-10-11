@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const items = b.items as { productId:number; quantity:number; unitPrice:number }[];
     if (!items?.length) return NextResponse.json({ message: 'Minimal 1 barang.' }, { status: 400 });
     const total = items.reduce((s, i) => s + Number(i.quantity) * Number(i.unitPrice), 0);
-    const purchase = await prisma.$transaction(async tx => {
+    const purchase = await prisma.$transaction(async (tx: any) => {
       const p = await tx.purchase.create({ data: { invoiceNo: b.invoiceNo, date: new Date(b.date || Date.now()), method: b.method, supplierId: b.supplierId ? Number(b.supplierId) : null, total, notes: b.notes || null } });
       for (const i of items) {
         const qty = Number(i.quantity), price = Number(i.unitPrice);
