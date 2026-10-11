@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     if (shortage) return NextResponse.json({ message: `Stok ${shortage.p.name} tidak cukup. Sisa ${shortage.p.stock}.` }, { status: 400 });
     const total = prepared.reduce((s, x) => s + x.subtotal, 0); const paid = Number(b.paid || 0);
     if (paid < total) return NextResponse.json({ message: 'Pembayaran kurang dari total.' }, { status: 400 });
-    const sale = await prisma.$transaction(async tx => {
+    const sale = await prisma.$transaction(async (tx: any) => {
       const s = await tx.sale.create({ data: { invoiceNo: b.invoiceNo, date: new Date(b.date || Date.now()), buyerType: b.buyerType, paymentMethod: b.paymentMethod, total, paid, change: paid-total } });
       for (const x of prepared) {
         await tx.saleItem.create({ data: { saleId: s.id, productId: x.p.id, quantity: x.qty, unitPrice: x.price, costPrice: x.p.purchasePrice, subtotal: x.subtotal, profit: x.profit } });
