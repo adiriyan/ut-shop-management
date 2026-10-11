@@ -22,7 +22,14 @@ export async function GET() {
       prisma.sale.findMany({where:{date:{gte:start7,lte:endToday}},select:{date:true,total:true}})
     ]);
     const days=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
-    const chart=Array.from({length:7},(_,i)=>{const d=new Date(start7);d.setDate(start7.getDate()+i);const key=d.toISOString().slice(0,10);const total=chartSales.filter(x=>new Date(x.date).toISOString().slice(0,10)===key).reduce((a,x)=>a+x.total,0);return {day:days[d.getDay()],total}});
-    return NextResponse.json({products,sales,purchases,lowStock,revenue:salesAgg._sum.total||0,profit:profitAgg._sum.profit||0,todayRevenue:todayAgg._sum.total||0,todayTransactions:todayCount,recent,chart});
+    const chart = Array.from({ length: 7 }, (_, i) => {
+  const d = new Date(start7);
+  d.setDate(start7.getDate() + i);
+  const key = d.toISOString().slice(0, 10);
+  const total = chartSales
+    .filter((x: any) => new Date(x.date).toISOString().slice(0, 10) === key)
+    .reduce((a: number, x: any) => a + x.total, 0);
+  return { day: days[d.getDay()], total };
+});
   } catch { return NextResponse.json({message:'Unauthorized'},{status:401}); }
 }
