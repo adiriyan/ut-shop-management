@@ -54,7 +54,6 @@ export default function ShellUI({
           </div>
         </header>
         
-        {/* Klik area layar luar untuk menutup menu */}
         <main className="content-area" onClick={() => isOpen && closeMenu()}>
           {children}
         </main>
