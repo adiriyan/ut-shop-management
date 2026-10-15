@@ -16,14 +16,21 @@ export default function ShellUI({
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-    // Memaksa penambahan class agar CSS bawaan template merespons
     document.documentElement.classList.toggle('show-sidebar');
     document.body.classList.toggle('show-sidebar');
   };
 
+  const closeMenu = () => {
+    setIsOpen(false);
+    document.documentElement.classList.remove('show-sidebar');
+    document.body.classList.remove('show-sidebar');
+  };
+
   return (
     <div className={`app-layout ${isOpen ? 'show-sidebar sidebar-open' : ''}`}>
-      <Nav role={role} username={username} />
+      
+      {/* Kirim status isOpen dan onClose ke Nav */}
+      <Nav role={role} username={username} isOpen={isOpen} onClose={closeMenu} />
       
       <div className="main-area">
         <header className="top-header">
@@ -47,8 +54,8 @@ export default function ShellUI({
           </div>
         </header>
         
-        {/* Jika menu terbuka dan area luar diklik, menu akan tertutup otomatis */}
-        <main className="content-area" onClick={() => isOpen && toggleMenu()}>
+        {/* Klik area layar luar untuk menutup menu */}
+        <main className="content-area" onClick={() => isOpen && closeMenu()}>
           {children}
         </main>
       </div>

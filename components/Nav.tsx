@@ -17,19 +17,20 @@ const items = [
 export default function Nav({
   role,
   username,
+  isOpen,
+  onClose,
 }: {
   role: string;
   username: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }) {
   const path = usePathname();
   const router = useRouter();
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-
+      await fetch('/api/auth/logout', { method: 'POST' });
       router.push('/login');
     } catch (error) {
       console.error('Logout gagal:', error);
@@ -38,115 +39,59 @@ export default function Nav({
 
   const menu =
     role === 'ADMIN'
-      ? [
-          ...items,
-          {
-            href: '/users',
-            label: 'Pengguna',
-            icon: '♙',
-          },
-        ]
+      ? [...items, { href: '/users', label: 'Pengguna', icon: '♙' }]
       : items;
 
   return (
-    <aside className="sidebar">
-
-      {/* LOGO UT SHOP */}
+    <aside className={`sidebar ${isOpen ? 'open show active' : ''}`}>
       <div
         className="sidebar-brand"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          padding: '16px',
-        }}
+        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '16px' }}
       >
-
-        {/* Kotak logo */}
         <div
           style={{
-            width: '48px',
-            height: '48px',
-            minWidth: '48px',
-            minHeight: '48px',
-            backgroundColor: '#ffffff',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            overflow: 'hidden',
-            position: 'relative',
-            flexShrink: 0,
+            width: '48px', height: '48px', minWidth: '48px', minHeight: '48px',
+            backgroundColor: '#ffffff', borderRadius: '8px', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+            position: 'relative', flexShrink: 0,
           }}
         >
           <img
             src="/logo-universitas-terbuka.png"
             alt="Logo Universitas Terbuka"
             style={{
-              width: '40px',
-              height: '40px',
-              maxWidth: '40px',
-              maxHeight: '40px',
-              minWidth: '40px',
-              minHeight: '40px',
-              objectFit: 'contain',
-              objectPosition: 'center',
-              display: 'block',
-              position: 'static',
-              margin: 0,
-              padding: 0,
+              width: '40px', height: '40px', maxWidth: '40px', maxHeight: '40px',
+              minWidth: '40px', minHeight: '40px', objectFit: 'contain',
+              objectPosition: 'center', display: 'block', position: 'static',
+              margin: 0, padding: 0,
             }}
           />
         </div>
-
-        {/* Nama aplikasi */}
         <div>
-          <div className="brand-title">
-            UT SHOP
-          </div>
-
-          <div className="brand-subtitle">
-            Sistem Pembukuan
-          </div>
+          <div className="brand-title">UT SHOP</div>
+          <div className="brand-subtitle">Sistem Pembukuan</div>
         </div>
-
       </div>
 
-      {/* MENU */}
       <nav className="sidebar-menu">
-
         {menu.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={
-              path === item.href
-                ? 'menu-item active'
-                : 'menu-item'
-            }
+            onClick={onClose}
+            className={path === item.href ? 'menu-item active' : 'menu-item'}
           >
-            <span className="menu-icon">
-              {item.icon}
-            </span>
-
-            <span>
-              {item.label}
-            </span>
+            <span className="menu-icon">{item.icon}</span>
+            <span>{item.label}</span>
           </Link>
         ))}
-
       </nav>
 
-      {/* KELUAR */}
       <div className="sidebar-footer">
-        <button
-          className="logout-button"
-          onClick={logout}
-        >
+        <button className="logout-button" onClick={logout}>
           Keluar
         </button>
       </div>
-
     </aside>
   );
 }
